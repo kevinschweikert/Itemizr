@@ -1,0 +1,79 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Itemizr
+
+## Section
+
+```elixir
+alias Itemizr.Repo
+
+# kevin = Repo.insert!(%Itemizr.Owner{name: "Kevin Schweikert"})
+# Repo.insert!(%Itemizr.Asset{name: "XPS 15", brand: "Dell", serial_number: "asdf1234", status: :available, owner: kevin})
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+Itemizr.Repo
+```
+
+```elixir
+import Ecto.Query, only: [from: 2]
+assets = Repo.all(from(a in Itemizr.Asset, preload: [:owner]))
+IO.inspect(assets)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[debug] QUERY OK source="assets" db=0.3ms queue=0.1ms idle=1084.2ms
+SELECT a0."id", a0."name", a0."brand", a0."serial_number", a0."status", a0."owner_id", a0."inserted_at", a0."updated_at" FROM "assets" AS a0 []
+↳ :erl_eval.do_apply/7, at: erl_eval.erl:744
+[
+  %Itemizr.Asset{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "assets">,
+    brand: "Dell",
+    id: 1,
+    inserted_at: ~N[2022-05-22 13:36:49],
+    name: "XPS 15",
+    owner: %Itemizr.Owner{
+      __meta__: #Ecto.Schema.Metadata<:loaded, "owners">,
+      assets: #Ecto.Association.NotLoaded<association :assets is not loaded>,
+      id: 1,
+      name: "Kevin Schweikert"
+    },
+    owner_id: 1,
+    serial_number: "asdf1234",
+    status: :available,
+    updated_at: ~N[2022-05-22 13:36:49]
+  }
+]
+[debug] QUERY OK source="owners" db=0.4ms queue=0.1ms idle=1085.2ms
+SELECT o0."id", o0."name", o0."id" FROM "owners" AS o0 WHERE (o0."id" = ?) [1]
+↳ :erl_eval.do_apply/7, at: erl_eval.erl:744
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  %Itemizr.Asset{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "assets">,
+    brand: "Dell",
+    id: 1,
+    inserted_at: ~N[2022-05-22 13:36:49],
+    name: "XPS 15",
+    owner: %Itemizr.Owner{
+      __meta__: #Ecto.Schema.Metadata<:loaded, "owners">,
+      assets: #Ecto.Association.NotLoaded<association :assets is not loaded>,
+      id: 1,
+      name: "Kevin Schweikert"
+    },
+    owner_id: 1,
+    serial_number: "asdf1234",
+    status: :available,
+    updated_at: ~N[2022-05-22 13:36:49]
+  }
+]
+```
