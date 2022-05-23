@@ -2,7 +2,7 @@
 
 # Itemizr
 
-## Section
+## first
 
 ```elixir
 alias Itemizr.Repo
@@ -26,7 +26,7 @@ IO.inspect(assets)
 <!-- livebook:{"output":true} -->
 
 ```
-[debug] QUERY OK source="assets" db=0.3ms queue=0.1ms idle=1084.2ms
+[debug] QUERY OK source="assets" db=0.4ms queue=0.1ms idle=1928.6ms
 SELECT a0."id", a0."name", a0."brand", a0."serial_number", a0."status", a0."owner_id", a0."inserted_at", a0."updated_at" FROM "assets" AS a0 []
 ↳ :erl_eval.do_apply/7, at: erl_eval.erl:744
 [
@@ -48,7 +48,7 @@ SELECT a0."id", a0."name", a0."brand", a0."serial_number", a0."status", a0."owne
     updated_at: ~N[2022-05-22 13:36:49]
   }
 ]
-[debug] QUERY OK source="owners" db=0.4ms queue=0.1ms idle=1085.2ms
+[debug] QUERY OK source="owners" db=0.4ms idle=1929.6ms
 SELECT o0."id", o0."name", o0."id" FROM "owners" AS o0 WHERE (o0."id" = ?) [1]
 ↳ :erl_eval.do_apply/7, at: erl_eval.erl:744
 
@@ -76,4 +76,93 @@ SELECT o0."id", o0."name", o0."id" FROM "owners" AS o0 WHERE (o0."id" = ?) [1]
     updated_at: ~N[2022-05-22 13:36:49]
   }
 ]
+```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## second
+
+```elixir
+alias Itemizr.Inventory
+
+# {:ok, asset } = Inventory.create_asset("test")
+{:ok, owner} = Inventory.create_owner("beebop")
+
+a = Inventory.get_asset(10)
+owner = Inventory.get_owner(owner.id)
+
+{:ok, new_asset} = Inventory.update_asset(a, %{brand: "dell"})
+# Inventory.delete_owner(owner)
+{:ok, new_asset} = Inventory.update_asset(new_asset, %{owner_id: owner.id})
+
+IO.inspect(Inventory.get_asset(10))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[debug] QUERY OK db=0.8ms idle=124.8ms
+INSERT INTO "owners" ("name") VALUES (?) RETURNING "id" ["beebop"]
+↳ :erl_eval.do_apply/7, at: erl_eval.erl:744
+[debug] QUERY OK source="assets" db=0.5ms queue=0.1ms idle=126.2ms
+SELECT a0."id", a0."name", a0."brand", a0."serial_number", a0."status", a0."owner_id", a0."inserted_at", a0."updated_at" FROM "assets" AS a0 WHERE (a0."id" = ?) [10]
+↳ Itemizr.Inventory.get_asset/1, at: lib/itemizr/inventory.ex:36
+[debug] QUERY OK source="owners" db=0.4ms idle=127.3ms
+SELECT o0."id", o0."name", o0."id" FROM "owners" AS o0 WHERE (o0."id" = ?) [2]
+↳ :erl_eval.do_apply/7, at: erl_eval.erl:744
+[debug] QUERY OK source="owners" db=0.0ms idle=128.0ms
+SELECT o0."id", o0."name" FROM "owners" AS o0 WHERE (o0."id" = ?) [4]
+↳ Itemizr.Inventory.get_owner/1, at: lib/itemizr/inventory.ex:14
+[debug] QUERY OK source="assets" db=0.0ms idle=128.2ms
+SELECT a0."id", a0."name", a0."brand", a0."serial_number", a0."status", a0."owner_id", a0."inserted_at", a0."updated_at", a0."owner_id" FROM "assets" AS a0 WHERE (a0."owner_id" = ?) ORDER BY a0."owner_id" [4]
+↳ :erl_eval.do_apply/7, at: erl_eval.erl:744
+[debug] QUERY OK db=0.1ms idle=2.6ms
+UPDATE "assets" SET "owner_id" = ?, "updated_at" = ? WHERE "id" = ? [4, "2022-05-23T21:53:26", 10]
+↳ :erl_eval.do_apply/7, at: erl_eval.erl:744
+[debug] QUERY OK source="assets" db=0.0ms idle=1.7ms
+SELECT a0."id", a0."name", a0."brand", a0."serial_number", a0."status", a0."owner_id", a0."inserted_at", a0."updated_at" FROM "assets" AS a0 WHERE (a0."id" = ?) [10]
+↳ Itemizr.Inventory.get_asset/1, at: lib/itemizr/inventory.ex:36
+%Itemizr.Asset{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "assets">,
+  brand: "dell",
+  id: 10,
+  inserted_at: ~N[2022-05-23 21:13:14],
+  name: "test",
+  owner: %Itemizr.Owner{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "owners">,
+    assets: #Ecto.Association.NotLoaded<association :assets is not loaded>,
+    id: 4,
+    name: "beebop"
+  },
+  owner_id: 4,
+  serial_number: nil,
+  status: :available,
+  updated_at: ~N[2022-05-23 21:53:26]
+}
+[debug] QUERY OK source="owners" db=0.0ms idle=1.0ms
+SELECT o0."id", o0."name", o0."id" FROM "owners" AS o0 WHERE (o0."id" = ?) [4]
+↳ :erl_eval.do_apply/7, at: erl_eval.erl:744
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%Itemizr.Asset{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "assets">,
+  brand: "dell",
+  id: 10,
+  inserted_at: ~N[2022-05-23 21:13:14],
+  name: "test",
+  owner: %Itemizr.Owner{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "owners">,
+    assets: #Ecto.Association.NotLoaded<association :assets is not loaded>,
+    id: 4,
+    name: "beebop"
+  },
+  owner_id: 4,
+  serial_number: nil,
+  status: :available,
+  updated_at: ~N[2022-05-23 21:53:26]
+}
 ```
