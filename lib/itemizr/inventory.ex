@@ -15,13 +15,19 @@ defmodule Itemizr.Inventory do
     |> Repo.preload(:assets)
   end
 
-  def update_owner(owner, params) do
+  def get_owners() do
+    Owner
+    |> Repo.all()
+    |> Repo.preload(:assets)
+  end
+
+  def update_owner(%Owner{} = owner, params) do
     owner
     |> Owner.changeset(params)
     |> Repo.update()
   end
 
-  def delete_owner(owner) do
+  def delete_owner(%Owner{} = owner) do
     Repo.delete(owner)
   end
 
@@ -34,6 +40,12 @@ defmodule Itemizr.Inventory do
   def get_asset(id) do
     Asset
     |> Repo.get(id)
+    |> Repo.preload(:owner)
+  end
+
+  def get_assets() do
+    Asset
+    |> Repo.all()
     |> Repo.preload(:owner)
   end
 

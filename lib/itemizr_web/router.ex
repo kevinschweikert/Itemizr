@@ -17,7 +17,9 @@ defmodule ItemizrWeb.Router do
   scope "/", ItemizrWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", HomeLive
+    live "/assets", AssetsLive
+    live "/owners", OwnersLive
   end
 
   # Other scopes may use custom stacks.

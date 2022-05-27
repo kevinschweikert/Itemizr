@@ -95,6 +95,8 @@ defmodule ItemizrWeb do
 
       import ItemizrWeb.ErrorHelpers
       alias ItemizrWeb.Router.Helpers, as: Routes
+
+      use PetalComponents
     end
   end
 

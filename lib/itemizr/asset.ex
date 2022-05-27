@@ -16,7 +16,7 @@ defmodule Itemizr.Asset do
     asset
     |> cast(params, [:name, :brand, :serial_number, :status, :owner_id])
     |> cast_assoc(:owner, with: &Itemizr.Owner.changeset/2)
-    #|> assoc_constraint(:owner)
+    # |> assoc_constraint(:owner)
     |> validate_required([:name])
     |> validate_inclusion(:status, [:available, :in_use])
   end
