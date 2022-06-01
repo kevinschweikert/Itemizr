@@ -19,6 +19,7 @@ defmodule ItemizrWeb.Router do
 
     live "/", HomeLive
     live "/assets", AssetsLive
+    live "/assets/new", AssetsLive, :new
     live "/owners", OwnersLive
   end
 
